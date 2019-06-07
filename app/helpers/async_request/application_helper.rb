@@ -8,7 +8,7 @@ module AsyncRequest
         status: Job.statuses[:waiting],
         uid: SecureRandom.uuid
       )
-      JobProcessor.perform_async(job.id)
+      JobProcessor.perform_async(job.id, job.worker)
       job.uid
     end
   end

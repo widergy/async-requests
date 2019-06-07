@@ -3,7 +3,7 @@ module AsyncRequest
     def show
       job = Job.find_by(uid: params[:id])
       return head :not_found unless job.present?
-      job.processed? ? render_finished_job(job) : render_pending(job)
+      job.finished? ? render_finished_job(job) : render_pending(job)
     end
 
     private

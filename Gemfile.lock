@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    async_request (0.0.7)
+    async_request (0.0.9)
       rails (>= 4.2)
-      sidekiq (~> 4.0)
+      sidekiq (>= 4.0, < 6)
 
 GEM
   remote: https://rubygems.org/
@@ -179,4 +179,4 @@ DEPENDENCIES
   rubocop
 
 BUNDLED WITH
-   1.16.1
+   1.16.2

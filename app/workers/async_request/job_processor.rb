@@ -3,15 +3,15 @@ module AsyncRequest
     include Sidekiq::Worker
     sidekiq_options queue: AsyncRequest.config[:queue], retry: AsyncRequest.config[:retry]
 
-    def perform(id)
+    def perform(id, _worker_class)
       job = Job.find(id)
       job.processing!
-      status, response = job.worker.constantize.new.execute(*job.params)
-      job.update_attributes!(
-        status: Job.statuses[:processed],
-        status_code: status,
-        response: response.to_json
-      )
+      begin
+        status, response = job.worker.constantize.new.execute(*job.params)
+        job.successfully_processed!(response, status)
+      rescue StandardError => e
+        job.finished_with_errors! e
+      end
     end
   end
 end
