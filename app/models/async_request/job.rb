@@ -25,7 +25,7 @@ module AsyncRequest
       log_message = "Processing failed for #{worker} job with id=#{id}"
       Rails.logger.info(log_message)
       Rails.logger.error "#{error.inspect} \n #{error.backtrace.join("\n")}"
-      Rollbar.error(error, log_message, params: params.inspect)
+      Rollbar.error(error, log_message, params: filtered_params(params))
       update_attributes!(status: :failed, status_code: 500, response: error_response(error))
     end
 
@@ -34,6 +34,12 @@ module AsyncRequest
     def map_status_code(status_code)
       return Rack::Utils::SYMBOL_TO_STATUS_CODE[status_code] if status_code.is_a?(Symbol)
       status_code.to_i
+    end
+
+    def filtered_params(params)
+      ActionDispatch::Http::ParameterFilter.new(Rails.application.config.filter_parameters)
+                                           .filter(params)
+                                           .inspect
     end
 
     def error_response(error)
