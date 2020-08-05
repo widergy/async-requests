@@ -2,7 +2,7 @@ module AsyncRequest
   module ApplicationHelper
     def execute_async(worker_class, *params)
       raise ArgumentError if worker_class.nil?
-      job = Job.create(
+      job = Job.create!(
         worker: worker_class,
         params: params,
         status: Job.statuses[:waiting],
