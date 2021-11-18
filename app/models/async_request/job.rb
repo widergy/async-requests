@@ -37,7 +37,7 @@ module AsyncRequest
     end
 
     def filtered_params(params)
-      ActionDispatch::Http::ParameterFilter.new(Rails.application.config.filter_parameters)
+      ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
                                            .filter(params.compact)
                                            .inspect
     end
