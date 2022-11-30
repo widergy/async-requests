@@ -34,7 +34,7 @@ module AsyncRequest
     end
 
     def send_extra_data?
-      !extra_data.empty? && @worker_class.respond_to?(:handle_extra_data?) && @worker_class.handle_extra_data?
+      extra_data.present? && @worker_class.respond_to?(:handle_extra_data?) && @worker_class.handle_extra_data?
     end
 
     def params_and_extra_data
