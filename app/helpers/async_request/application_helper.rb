@@ -29,8 +29,7 @@ module AsyncRequest
     end
 
     def set_worker_params 
-      return @worker_params unless send_extra_data?
-      params_and_extra_data
+      send_extra_data? ? params_and_extra_data : @worker_params
     end
 
     def send_extra_data?
