@@ -20,7 +20,8 @@ module AsyncRequest
 
     def log_request
       Rails.logger.info do
-        "Request for Utility-ID: #{utility_code_header} and Channel: #{channel_header}"
+        "Request for \"utility_code\": \"#{utility_code_header}\"\n" \
+        "Request for \"channel\": \"#{channel_header}\""
       end
     end
 
