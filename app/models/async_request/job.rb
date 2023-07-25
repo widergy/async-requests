@@ -29,6 +29,7 @@ module AsyncRequest
       update_attributes!(status: :failed, status_code: 500, response: error_response(error))
     end
 
+    # This method will return the job execution time in milliseconds
     def execution_time
       (1000 * (updated_at - created_at)).to_i
     end
