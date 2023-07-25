@@ -30,7 +30,7 @@ module AsyncRequest
     end
 
     def execution_time
-      1000 * (updated_at - created_at).to_i
+      (1000 * (updated_at - created_at)).to_i
     end
 
     private
