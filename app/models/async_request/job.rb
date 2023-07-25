@@ -8,12 +8,12 @@ module AsyncRequest
     end
 
     def processing!
-      Rails.logger.info("Processing #{worker} job with id=#{id}")
+      Rails.logger.info("Processing #{worker} job with id=#{uid}")
       super
     end
 
     def successfully_processed!(response, status_code)
-      Rails.logger.info("Processing finished successfully for #{worker} job with id=#{id}")
+      Rails.logger.info("Processing finished successfully for #{worker} job with id=#{uid}")
       update_attributes!(
         status: :processed,
         status_code: map_status_code(status_code),
@@ -22,11 +22,15 @@ module AsyncRequest
     end
 
     def finished_with_errors!(error)
-      log_message = "Processing failed for #{worker} job with id=#{id}"
+      log_message = "Processing failed for #{worker} job with id=#{uid}"
       Rails.logger.info(log_message)
       Rails.logger.error "#{error.inspect} \n #{error.backtrace.join("\n")}"
       Rollbar.error(error, log_message, params: filtered_params(params))
       update_attributes!(status: :failed, status_code: 500, response: error_response(error))
+    end
+
+    def execution_time
+      1000 * (updated_at - created_at).to_i
     end
 
     private
