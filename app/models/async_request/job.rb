@@ -43,7 +43,7 @@ module AsyncRequest
 
     def filtered_params(params)
       ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
-                                        .filter(params.second.compact)
+                                        .filter(params.compact)
                                         .inspect
     end
 
