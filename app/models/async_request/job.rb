@@ -14,7 +14,7 @@ module AsyncRequest
 
     def successfully_processed!(response, status_code)
       Rails.logger.info("Processing finished successfully for #{worker} job with id=#{uid}")
-      update_attributes!(
+      update!(
         status: :processed,
         status_code: map_status_code(status_code),
         response: response.to_json
@@ -26,7 +26,7 @@ module AsyncRequest
       Rails.logger.info(log_message)
       Rails.logger.error "#{error.inspect} \n #{error.backtrace.join("\n")}"
       Rollbar.error(error, log_message, params: filtered_params(params))
-      update_attributes!(status: :failed, status_code: 500, response: error_response(error))
+      update!(status: :failed, status_code: 500, response: error_response(error))
     end
 
     # This method will return the job execution time in milliseconds
@@ -42,9 +42,9 @@ module AsyncRequest
     end
 
     def filtered_params(params)
-      ActionDispatch::Http::ParameterFilter.new(Rails.application.config.filter_parameters)
-                                           .filter(params.compact)
-                                           .inspect
+      ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
+                                        .filter(params.compact)
+                                        .inspect
     end
 
     def error_response(error)
