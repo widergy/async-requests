@@ -48,7 +48,7 @@ module AsyncRequest
     end
 
     def formatted_params(params)
-      params is_a?(Array) ? { "params" => params.compact } : params.compact
+      params.is_a?(Array) ? { "params" => params.compact } : params.compact
     end
 
     def error_response(error)
