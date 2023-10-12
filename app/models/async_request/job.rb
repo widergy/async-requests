@@ -46,7 +46,7 @@ module AsyncRequest
     end
 
     def single_filter(params)
-      params = params.compact if params is_a?(Array) || params is_a?(Hash)
+      params = params.compact if params.is_a?(Array) || params.is_a?(Hash)
       parameter_filter.filter({"params" => params})
     end
 
