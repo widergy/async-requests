@@ -42,7 +42,7 @@ module AsyncRequest
     end
 
     def filtered_params(params)
-      params is_a?(Array) ? filter_array(params) : single_filter(params)
+      params.is_a?(Array) ? filter_array(params) : single_filter(params)
     end
 
     def single_filter(params)
