@@ -25,7 +25,7 @@ module AsyncRequest
       log_message = "Processing failed for #{worker} job with id=#{uid}"
       Rails.logger.info(log_message)
       Rails.logger.error "#{error.inspect} \n #{error.backtrace.join("\n")}"
-      Rollbar.error(error, log_message, params: filtered_params(params))
+      Rollbar.error(error, log_message, params: filtered_params(params).inspect)
       update_attributes!(status: :failed, status_code: 500, response: error_response(error))
     end
 
@@ -46,7 +46,7 @@ module AsyncRequest
     end
 
     def single_filter(params)
-      parameter_filter.filter(params.compact).inspect    
+      parameter_filter.filter({"params" => params.compact})
     end
 
     def parameter_filter(params)
@@ -55,8 +55,8 @@ module AsyncRequest
 
     def filter_array(params)
       params.map { |element| 
-        filtered_params(element)
-      } 
+        filtered_params(element)["params"]
+      }
     end
 
     def error_response(error)
