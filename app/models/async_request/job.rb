@@ -43,8 +43,12 @@ module AsyncRequest
 
     def filtered_params(params)
       ActionDispatch::Http::ParameterFilter.new(Rails.application.config.filter_parameters)
-                                           .filter(params.compact)
+                                           .filter(formatted_params)
                                            .inspect
+    end
+
+    def formatted_params
+      params is_a?(Array) ? { "params" => params.compact } : params.compact
     end
 
     def error_response(error)
