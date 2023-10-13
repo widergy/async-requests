@@ -47,7 +47,7 @@ module AsyncRequest
     end
 
     def single_filter(params)
-      parameter_filter.filter({"params" => params})
+      parameter_filter.filter(params)
     end
 
     def filter_array(params)
