@@ -42,6 +42,7 @@ module AsyncRequest
     end
 
     def filtered_params(params)
+      return params unless params.is_a?(Array) || params.is_a?(Hash)
       params.is_a?(Array) ? filter_array(compact_params(params)) : single_filter(compact_params(params))
     end
 
@@ -50,8 +51,8 @@ module AsyncRequest
     end
 
     def filter_array(params)
-      params.map { |element| 
-        filtered_params(element)["params"]
+      params.map { |element|
+        filtered_params(element)
       }
     end
 
