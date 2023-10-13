@@ -42,22 +42,26 @@ module AsyncRequest
     end
 
     def filtered_params(params)
-      params.is_a?(Array) ? filter_array(params) : single_filter(params)
+      params.is_a?(Array) ? filter_array(compact_params) : single_filter(compact_params)
     end
 
     def single_filter(params)
-      params = params.compact if params.is_a?(Array) || params.is_a?(Hash)
-      parameter_filter.filter({"params" => params})
-    end
-
-    def parameter_filter(params)
-      @filter ||= ActionDispatch::Http::ParameterFilter.new(Rails.application.config.filter_parameters)
+      parameter_filter.filter({"params" => compact_params(params)})
     end
 
     def filter_array(params)
       params.map { |element| 
         filtered_params(element)["params"]
       }
+    end
+    
+    def parameter_filter(params)
+      @filter ||= ActionDispatch::Http::ParameterFilter.new(Rails.application.config.filter_parameters)
+    end
+
+    def compact_params(params)
+      return params.compact if params.is_a?(Array) || params.is_a?(Hash)
+      params 
     end
 
     def error_response(error)
