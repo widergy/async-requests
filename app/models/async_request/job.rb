@@ -46,7 +46,7 @@ module AsyncRequest
     end
 
     def single_filter(params)
-      parameter_filter.filter({"params" => compact_params(params)})
+      parameter_filter.filter({"params" => params})
     end
 
     def filter_array(params)
@@ -55,7 +55,7 @@ module AsyncRequest
       }
     end
 
-    def parameter_filter(params)
+    def parameter_filter
       @filter ||= ActionDispatch::Http::ParameterFilter.new(Rails.application.config.filter_parameters)
     end
 
