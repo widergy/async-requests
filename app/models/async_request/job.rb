@@ -23,9 +23,7 @@ module AsyncRequest
 
     def finished_with_errors!(error)
       log_message = "Processing failed for #{worker} job with id=#{uid}"
-      Rails.logger.info(log_message)
-      Rails.logger.error "#{error.inspect} \n #{error.backtrace.join("\n")}"
-      Rollbar.error(error, log_message, params: filtered_params(params).inspect)
+      log_error(log_message, error)
       update_attributes!(status: :failed, status_code: 500, response: error_response(error))
     end
 
@@ -36,14 +34,20 @@ module AsyncRequest
 
     private
 
+    def log_error(log_message, error)
+      Rails.logger.info(log_message)
+      Rails.logger.error "#{error.inspect} \n #{error.backtrace.join("\n")}"
+      Rollbar.error(error, log_message, params: filtered_params(params).inspect)
+    end
+
     def map_status_code(status_code)
       return Rack::Utils::SYMBOL_TO_STATUS_CODE[status_code] if status_code.is_a?(Symbol)
       status_code.to_i
     end
 
-    def filtered_params(params)
+    def filtered_params
       return params unless params.is_a?(Array) || params.is_a?(Hash)
-      params.is_a?(Array) ? filter_array(compact_params(params)) : single_filter(compact_params(params))
+      params.is_a?(Array) ? filter_array(compact_data) : single_filter(compact_data)
     end
 
     def single_filter(params)
@@ -51,18 +55,19 @@ module AsyncRequest
     end
 
     def filter_array(params)
-      params.map { |element|
+      params.map do |element|
         filtered_params(element)
-      }
+      end
     end
 
     def parameter_filter
-      @filter ||= ActionDispatch::Http::ParameterFilter.new(Rails.application.config.filter_parameters)
+      @filter ||= ActionDispatch::Http::ParameterFilter
+                  .new(Rails.application.config.filter_parameters)
     end
 
-    def compact_params(params)
+    def compact_data
       return params.compact if params.is_a?(Array) || params.is_a?(Hash)
-      params 
+      params
     end
 
     def error_response(error)
