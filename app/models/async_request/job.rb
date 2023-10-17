@@ -37,7 +37,7 @@ module AsyncRequest
     def log_error(log_message, error)
       Rails.logger.info(log_message)
       Rails.logger.error "#{error.inspect} \n #{error.backtrace.join("\n")}"
-      Rollbar.error(error, log_message, params: filtered_params(params).inspect)
+      Rollbar.error(error, log_message, params: filtered_params.inspect)
     end
 
     def map_status_code(status_code)
