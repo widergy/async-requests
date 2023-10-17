@@ -37,7 +37,7 @@ module AsyncRequest
     def log_error(log_message, error)
       Rails.logger.info(log_message)
       Rails.logger.error "#{error.inspect} \n #{error.backtrace.join("\n")}"
-      Rollbar.error(error, log_message, params: filtered_params.inspect)
+      Rollbar.error(error, log_message, params: filtered_params(params).inspect)
     end
 
     def map_status_code(status_code)
@@ -45,9 +45,9 @@ module AsyncRequest
       status_code.to_i
     end
 
-    def filtered_params
+    def filtered_params(params)
       return params unless params.is_a?(Array) || params.is_a?(Hash)
-      params.is_a?(Array) ? filter_array(compact_data) : single_filter(compact_data)
+      params.is_a?(Array) ? filter_array(compact_data(params)) : single_filter(compact_data(params))
     end
 
     def single_filter(params)
@@ -65,7 +65,7 @@ module AsyncRequest
                   .new(Rails.application.config.filter_parameters)
     end
 
-    def compact_data
+    def compact_data(params)
       return params.compact if params.is_a?(Array) || params.is_a?(Hash)
       params
     end
