@@ -55,9 +55,7 @@ module AsyncRequest
     end
 
     def filter_array(params)
-      params.map do |element|
-        filtered_params(element)
-      end
+      params.map { |element| filtered_params(element) }
     end
 
     def parameter_filter
