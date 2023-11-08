@@ -47,7 +47,7 @@ module AsyncRequest
 
     def filtered_params(params)
       return params unless params.is_a?(Array) || params.is_a?(Hash)
-      params.is_a?(Array) ? filter_array(compact_data(params)) : single_filter(compact_data(params))
+      params.is_a?(Array) ? filter_array(params.compact) : single_filter(params.compact)
     end
 
     def single_filter(params)
@@ -63,11 +63,6 @@ module AsyncRequest
     def parameter_filter
       @filter ||= ActionDispatch::Http::ParameterFilter
                   .new(Rails.application.config.filter_parameters)
-    end
-
-    def compact_data(params)
-      return params.compact if params.is_a?(Array) || params.is_a?(Hash)
-      params
     end
 
     def error_response(error)
