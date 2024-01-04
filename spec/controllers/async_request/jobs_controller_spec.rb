@@ -21,6 +21,13 @@ module AsyncRequest
         end
       end
 
+      context 'when the job id is missing' do
+        it 'returns 400' do
+          get :show, id: nil
+          expect(response.status).to eq(400)
+        end
+      end
+
       context 'when the job exists but it is in a processing status' do
         let!(:job) { FactoryGirl.create(:async_request_job, :processing) }
         it 'returns 202' do

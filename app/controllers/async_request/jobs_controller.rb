@@ -3,7 +3,7 @@ module AsyncRequest
     before_action :log_request
 
     def show
-      job = Job.find_by(uid: params[:id])
+      job = Job.find_by(uid: params.require(:id))
       return head :not_found unless job.present?
       job.finished? ? render_finished_job(job) : render_pending(job)
     end
