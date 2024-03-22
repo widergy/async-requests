@@ -14,7 +14,7 @@ module AsyncRequest
 
     def successfully_processed!(response, status_code)
       Rails.logger.info("Processing finished successfully for #{worker} job with id=#{uid}")
-      update_attributes!(
+      update!(
         status: :processed,
         status_code: map_status_code(status_code),
         response: response.to_json
@@ -24,7 +24,7 @@ module AsyncRequest
     def finished_with_errors!(error)
       log_message = "Processing failed for #{worker} job with id=#{uid}"
       log_error(log_message, error)
-      update_attributes!(status: :failed, status_code: 500, response: error_response(error))
+      update!(status: :failed, status_code: 500, response: error_response(error))
     end
 
     # This method will return the job execution time in milliseconds
