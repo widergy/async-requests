@@ -59,8 +59,7 @@ module AsyncRequest
     end
 
     def parameter_filter
-      @filter ||= ActionDispatch::Http::ParameterFilter
-                  .new(Rails.application.config.filter_parameters)
+      @filter ||= ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
     end
 
     def error_response(error)
