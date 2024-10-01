@@ -11,7 +11,21 @@ module AsyncRequest
         job.successfully_processed!(response, status)
       rescue StandardError => e
         job.finished_with_errors! e
+      ensure
+        log_to_prometheus(job)
       end
+    end
+
+    private
+
+    def log_to_prometheus(job)
+      prometheus_data = job.params.last.try(:[], :prometheus_data)
+      return unless prometheus_data.present?
+      
+      channel = job.params.last.try(:[], :channel)
+
+      Prometheus::CustomMetrics.http_request_outcome_counter_increase(prometheus_data, channel,
+                                                                      job.status_code)
     end
   end
 end
